@@ -8,6 +8,12 @@ variable "proxmox_api_token_secret" {
   type        = string
 }
 
+variable "proxmox_vlan_bridge" {
+  description = "The name of the Proxmox VLAN bridge"
+  type        = string
+  default     = "vmbr70"
+}
+
 variable "youri_ssh_public_key" {
   description = "Youri's SSH public key"
   type        = string

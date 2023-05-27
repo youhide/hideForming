@@ -27,7 +27,7 @@ resource "proxmox_lxc" "terraform_cloud_agent" {
 
   network {
     name   = "eth0"
-    bridge = "vmbr70"
+    bridge = var.proxmox_vlan_bridge
     ip     = "dhcp"
   }
 }

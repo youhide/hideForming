@@ -27,7 +27,7 @@ resource "proxmox_lxc" "cronbox_lxc" {
 
   network {
     name   = "eth0"
-    bridge = "vmbr70"
+    bridge = var.proxmox_vlan_bridge
     ip     = "dhcp"
   }
 }
