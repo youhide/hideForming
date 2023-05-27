@@ -2,14 +2,22 @@ resource "proxmox_lxc" "cronbox_lxc" {
   target_node  = "pve2"
   hostname     = "cronbox.localdomain"
   ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  cores        = 1
+  memory       = 512
   password     = "something"
   unprivileged = true
   start        = true
+  onboot       = true
   ostype       = "ubuntu"
+  pool         = "Backup"
 
   ssh_public_keys = <<-EOT
-    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ1iC2EQeFQqN0kVZeTX4ID5wMaUZbId318umCxP37gm Youri@MacBook-Pro
+    ${var.youri_ssh_public_key}
   EOT
+
+  features {
+    nesting = true
+  }
 
   // Terraform will crash without rootfs defined
   rootfs {

@@ -1,5 +1,5 @@
 TERRAFORM_VERSION := $(shell terraform --version | head -n 1 | sed -e 's/^Terraform v\(.*\)$$/\1/')
-TERRAFORM_REQUIRED_VERSION := "1.3.5"
+TERRAFORM_REQUIRED_VERSION := "1.4.6"
 
 help:           ## Checks terraform version
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
@@ -20,13 +20,11 @@ plan: check     ## Run terraform plan. Ex. $ make tf plan
 	@tfsec --exclude-downloaded-modules .
 	@echo "Pulling the required modules..."
 	@terraform get
-	@terraform plan -out terraform-plan
+	@terraform plan
   
 apply: check    ## run an apply against an env. Ex. $ make apply
-	@echo "Will be applying the following to environment: ${AWS_PROFILE_TO_USE}"
-	@terraform show -no-color terraform-plan
-	@terraform apply -auto-approve terraform-plan
-	@test -f $(terraform-plan) && rm terraform-plan	
+	@terraform show -no-color
+	@terraform apply -auto-approve
 
 clean:          ## Cleans up terraform files. Ex. $ make clean
 	test -f $(terraform-plan*) && rm -f terraform-plan*

@@ -1,0 +1,18 @@
+[Unit]
+Description=Service to automatically start TFC/E Agent
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+EnvironmentFile=/opt/tfc_agent/tfc-agent.env
+Type=simple
+ExecStart=/opt/tfc_agent/tfc-agent
+KillSignal=SIGINT
+WorkingDirectory=/opt/tfc_agent
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n

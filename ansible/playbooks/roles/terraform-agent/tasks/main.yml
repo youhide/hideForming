@@ -1,0 +1,44 @@
+---
+
+- name: Update repositories cache and install packages
+  ansible.builtin.apt:
+    name: unzip
+    update_cache: true
+
+- name: Creates /opt/tfc_agent directory
+  ansible.builtin.file:
+    path: /opt/tfc_agent
+    mode: '0644'
+    state: directory
+
+- name: Unarchive a file that needs to be downloaded
+  ansible.builtin.unarchive:
+    src: https://releases.hashicorp.com/tfc-agent/1.9.0/tfc-agent_1.9.0_linux_amd64.zip
+    dest: /opt/tfc_agent
+    remote_src: true
+
+- name: Template the dotenv file
+  ansible.builtin.template:
+    src: "{{ template_dir }}/opt/tfc_agent/tfc-agent.env"
+    dest: /opt/tfc_agent/tfc-agent.env
+    mode: "0644"
+
+- name: Template the systemd file
+  ansible.builtin.template:
+    src: "{{ template_dir }}/etc/systemd/system/tfc-agent.service"
+    dest: /etc/systemd/system/tfc-agent.service
+    mode: "0644"
+
+- name: Enable service tfc-agent
+  ansible.builtin.systemd:
+    name: tfc-agent
+    enabled: true
+
+- name: Force systemd to reread configs
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Make sure a service unit is running
+  ansible.builtin.systemd:
+    state: started
+    name: tfc-agent

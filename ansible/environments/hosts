@@ -1,5 +1,8 @@
 [toolbox_ubuntu]
-192.168.14.212
+toolbox-ubuntu.localdomain
 
 [cronbox]
 cronbox.localdomain
+
+[tfc_agent]
+tfc-agent.localdomain
