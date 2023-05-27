@@ -1,0 +1,43 @@
+---
+
+# System handlers
+
+- name: Systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+
+# System network handlers
+
+- name: Restart sshd
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+  become: true
+
+- name: Restart network
+  ansible.builtin.service:
+    name: network
+    state: restarted
+  become: true
+
+# System service handlers
+
+- name: Reload sysctl
+  ansible.builtin.command:
+    cmd: sysctl -p
+  register: sysctl_reload
+  changed_when: sysctl_reload.rc == 0
+  become: true
+
+- name: Start docker
+  ansible.builtin.service:
+    name: docker
+    state: started
+  become: true
+
+- name: Restart docker
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+  become: true

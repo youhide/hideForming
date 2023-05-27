@@ -1,0 +1,7 @@
+---
+
+file_dir: "{{ role_path }}/files"
+template_dir: "{{ role_path }}/templates"
+
+cloudflare_api_token: "{{ lookup('community.general.passwordstore', 'hideOut/CloudFlare/api_token') }}"
+cloudflare_api_key: "{{ lookup('community.general.passwordstore', 'hideOut/CloudFlare/api_key') }}"

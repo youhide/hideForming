@@ -1,0 +1,42 @@
+---
+
+- name: Update repositories cache and install packages
+  ansible.builtin.apt:
+    name: pip
+    update_cache: true
+
+# - name: Copy scripts
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/scripts/"
+#     dest: '/scripts/'
+#     mode: '0644'
+
+- name: Template CloudFlare ZeroTrust Gateway Update script
+  ansible.builtin.template:
+    src: "{{ template_dir }}/scripts/cloudflare_zerotrust-gateway-update.py"
+    dest: /scripts/cloudflare_zerotrust-gateway-update.py
+    mode: "0644"
+
+- name: Install python packages
+  ansible.builtin.pip:
+    name: requests
+
+- name: Clean Crontab
+  ansible.builtin.command: "crontab -r"
+  failed_when: false
+  changed_when: false
+
+- name: Creates PATH on top of crontab
+  ansible.builtin.cron:
+    name: PATH
+    env: true
+    job: "/usr/bin"
+
+- name: CloudFlare ZeroTrust Gateway Update
+  ansible.builtin.cron:
+    name: "CloudFlare ZeroTrust Gateway Update"
+    special_time: reboot
+    job: "python3 /scripts/cloudflare_zerotrust-gateway-update.py"
+
+# - name: Reboot the machine with all defaults
+#   ansible.builtin.reboot:

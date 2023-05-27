@@ -1,0 +1,14 @@
+---
+
+- name: Check if docker is installed
+  ansible.builtin.command: docker --version
+  register: docker_valid
+  changed_when: false
+  ignore_errors: true
+
+- name: Installing docker
+  when: docker_valid.failed
+  changed_when: my_output.rc != 1
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://get.docker.com | bash -
