@@ -31,6 +31,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_proxmox_api_token_id"></a> [proxmox\_api\_token\_id](#input\_proxmox\_api\_token\_id) | The ID of the Proxmox API token | `string` | n/a | yes |
 | <a name="input_proxmox_api_token_secret"></a> [proxmox\_api\_token\_secret](#input\_proxmox\_api\_token\_secret) | The secret of the Proxmox API token | `string` | n/a | yes |
+| <a name="input_proxmox_vlan_bridge"></a> [proxmox\_vlan\_bridge](#input\_proxmox\_vlan\_bridge) | The name of the Proxmox VLAN bridge | `string` | `"vmbr70"` | no |
 | <a name="input_youri_ssh_public_key"></a> [youri\_ssh\_public\_key](#input\_youri\_ssh\_public\_key) | Youri's SSH public key | `string` | `"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ1iC2EQeFQqN0kVZeTX4ID5wMaUZbId318umCxP37gm Youri@MacBook-Pro"` | no |
 
 ## Outputs
