@@ -1,0 +1,52 @@
+---
+
+- name: Update repositories cache and install packages
+  ansible.builtin.apt:
+    name:
+      - mysql-server
+      - mysql-client
+      - pip
+    update_cache: true
+  notify: Restart MySQL
+
+- name: Install python packages
+  ansible.builtin.pip:
+    name: PyMySQL
+
+- name: Delete anonymous users
+  community.mysql.mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: ''
+    host_all: true
+    state: absent
+
+- name: Create legend database
+  community.mysql.mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: legend
+    state: present
+
+- name: Create user for legend db
+  community.mysql.mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: legend
+    password: legend
+    host: '%'
+    priv: legend.*:SELECT,INSERT,UPDATE,DELETE,CREATE
+    state: present
+
+- name: Enable remote login to mysql
+  ansible.builtin.lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = 0.0.0.0'
+    backup: false
+
+- name: Enable remote login to mysql
+  ansible.builtin.lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: '^mysqlx-bind-address'
+    line: 'mysqlx-bind-address = 0.0.0.0'
+    backup: false
+  notify:
+    - Restart MySQL

@@ -6,3 +6,6 @@ cronbox.localdomain
 
 [tfc_agent]
 tfc-agent.localdomain
+
+[legend_database]
+legend-database.localdomain

@@ -12,3 +12,7 @@ cronbox:                          ## Runs the playbook for the cronbox environme
 terraform-agent:                  ## Runs the playbook for the terraform-agent environment. Ex. $ make terraform-agent
 	@ansible-lint playbooks/terraform-agent.yml
 	@ansible-playbook --diff -i environments/hosts playbooks/terraform-agent.yml -u root
+
+legend-database:                  ## Runs the playbook for the legend-database environment. Ex. $ make legend-database
+	@ansible-lint playbooks/legend-database.yml
+	@ansible-playbook --diff -i environments/hosts playbooks/legend-database.yml -u root

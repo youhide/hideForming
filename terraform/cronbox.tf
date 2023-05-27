@@ -1,6 +1,6 @@
 resource "proxmox_lxc" "cronbox_lxc" {
   target_node  = "pve2"
-  hostname     = "cronbox.localdomain"
+  hostname     = "cronbox"
   ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
   cores        = 1
   memory       = 512

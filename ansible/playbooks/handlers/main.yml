@@ -41,3 +41,9 @@
     name: docker
     state: restarted
   become: true
+
+- name: Restart MySQL
+  ansible.builtin.service:
+    name: mysql
+    state: restarted
+  become: true

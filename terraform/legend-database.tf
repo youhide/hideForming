@@ -1,6 +1,6 @@
-resource "proxmox_lxc" "terraform_cloud_agent" {
+resource "proxmox_lxc" "legend_database" {
   target_node  = "pve2"
-  hostname     = "tfc-agent"
+  hostname     = "legend-database"
   ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
   cores        = 2
   memory       = 1024
@@ -22,7 +22,7 @@ resource "proxmox_lxc" "terraform_cloud_agent" {
   // Terraform will crash without rootfs defined
   rootfs {
     storage = "local-lvm"
-    size    = "8G"
+    size    = "16G"
   }
 
   network {
