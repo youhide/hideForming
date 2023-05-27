@@ -1,0 +1,4 @@
+---
+
+file_dir: "{{ role_path }}/files"
+template_dir: "{{ role_path }}/templates"

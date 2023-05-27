@@ -1,6 +1,3 @@
 ---
 
-file_dir: "{{ role_path }}/files"
-template_dir: "{{ role_path }}/templates"
-
 tfc_agent_token: "{{ lookup('community.general.passwordstore', 'hideOut/Terraform/agent_token') }}"
