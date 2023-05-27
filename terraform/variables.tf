@@ -13,3 +13,4 @@ variable "youri_ssh_public_key" {
   type        = string
   default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ1iC2EQeFQqN0kVZeTX4ID5wMaUZbId318umCxP37gm Youri@MacBook-Pro"
 }
+
