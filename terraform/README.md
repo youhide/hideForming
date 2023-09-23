@@ -24,6 +24,7 @@ No modules.
 |------|------|
 | [proxmox_lxc.cronbox_lxc](https://registry.terraform.io/providers/telmate/proxmox/2.9.14/docs/resources/lxc) | resource |
 | [proxmox_lxc.legend_database](https://registry.terraform.io/providers/telmate/proxmox/2.9.14/docs/resources/lxc) | resource |
+| [proxmox_lxc.legend_shard](https://registry.terraform.io/providers/telmate/proxmox/2.9.14/docs/resources/lxc) | resource |
 | [proxmox_lxc.terraform_cloud_agent](https://registry.terraform.io/providers/telmate/proxmox/2.9.14/docs/resources/lxc) | resource |
 
 ## Inputs
