@@ -1,0 +1,6 @@
+---
+
+legend_shard_deploy_key_priv: |
+  {{ lookup('community.general.passwordstore', 'hideOut/LegenD-SharD/deploy_key_priv', returnall=true) }}
+legend_shard_deploy_key_pub: |
+  {{ lookup('community.general.passwordstore', 'hideOut/LegenD-SharD/deploy_key_pub', returnall=true) }}

@@ -16,3 +16,7 @@ terraform-agent:                  ## Runs the playbook for the terraform-agent e
 legend-database:                  ## Runs the playbook for the legend-database environment. Ex. $ make legend-database
 	@ansible-lint playbooks/legend-database.yml
 	@ansible-playbook --diff -i environments/hosts playbooks/legend-database.yml -u root
+
+legend-shard:                  		## Runs the playbook for the legend-shard environment. Ex. $ make legend-shard
+	@ansible-lint playbooks/legend-shard.yml
+	@ansible-playbook --diff -i environments/hosts playbooks/legend-shard.yml -u root

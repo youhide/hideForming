@@ -1,0 +1,90 @@
+---
+
+- name: Update repositories cache and install packages
+  ansible.builtin.apt:
+    name:
+      - gpg
+      - gcc
+      - g++
+      - make
+      - ca-certificates
+      - curl
+      - gnupg
+      - mariadb-client
+      - git
+      - screen
+    update_cache: true
+
+- name: Install the gpg key for nodejs
+  ansible.builtin.apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key"
+
+- name: Install the nodejs 18 repo
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main"
+    update_cache: true
+
+- name: Install nodejs
+  ansible.builtin.apt:
+    name:
+      - nodejs
+    update_cache: true
+
+- name: Install pm2 node.js package globally
+  community.general.npm:
+    name: pm2
+    global: true
+
+- name: PM2 Startup
+  changed_when: true
+  ansible.builtin.command: pm2 startup
+
+- name: PM2 add/start legend api
+  changed_when: true
+  ansible.builtin.shell: cd /opt/LegenD-SharD-Sphere/api && pm2 start index.js
+  failed_when: false
+
+- name: PM2 save
+  changed_when: true
+  ansible.builtin.command: pm2 save
+
+- name: Make sure SSH pub is installed
+  ansible.builtin.copy:
+    content: '{{ legend_shard_deploy_key_pub }}'
+    dest: /root/.ssh/id_ed25519.pub
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Make sure SSH private key is installed
+  ansible.builtin.copy:
+    content: "{{ legend_shard_deploy_key_priv }}"
+    dest: /root/.ssh/id_ed25519
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Git checkout
+  ansible.builtin.git:
+    repo: 'git@github.com:youhide/LegenD-SharD-Sphere.git'
+    dest: '/opt/LegenD-SharD-Sphere'
+    version: master
+    accept_hostkey: true
+
+- name: Clean Crontab
+  ansible.builtin.command: "crontab -r"
+  failed_when: false
+  changed_when: false
+
+- name: Creates PATH on top of crontab
+  ansible.builtin.cron:
+    name: PATH
+    env: true
+    job: "/usr/bin"
+
+- name: Start Sphere Server on Reboot
+  ansible.builtin.cron:
+    name: "Start Sphere Server on Reboot"
+    special_time: reboot
+    job: 'sleep 30 && curl -d "command=boot-start" -X POST http://127.0.0.1:3000/run'
