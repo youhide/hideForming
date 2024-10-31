@@ -1,4 +1,4 @@
 ---
 
-cloudflare_api_token: "{{ lookup('community.general.passwordstore', 'hideOut/CloudFlare/api_token') }}"
-cloudflare_api_key: "{{ lookup('community.general.passwordstore', 'hideOut/CloudFlare/api_key') }}"
+cronbox_cloudflare_api_token: "{{ lookup('community.general.passwordstore', 'hideOut/CloudFlare/api_token') }}"
+cronbox_cloudflare_api_key: "{{ lookup('community.general.passwordstore', 'hideOut/CloudFlare/api_key') }}"

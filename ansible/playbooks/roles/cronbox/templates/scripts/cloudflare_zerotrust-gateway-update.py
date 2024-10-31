@@ -6,11 +6,11 @@ import json
 CONFIG = {
     "CLOUDFLARE": {
         "EMAIL": "youri@youhide.com.br", # Cloudflare account email address here
-        "API_TOKEN": "{{ cloudflare_api_token }}", # Cloudflare API token here (this one can be generated through the dashboard)
-        "API_KEY": "{{ cloudflare_api_key }}", # Your Cloudflare global API key here
+        "API_TOKEN": "{{ cronbox_cloudflare_api_token }}", # Cloudflare API token here (this one can be generated through the dashboard)
+        "API_KEY": "{{ cronbox_cloudflare_api_key }}", # Your Cloudflare global API key here
         "LOCATION_NAME": "Home" # The Cloudflare ZT Gateway location name
     },
-    "HOSTNAME": "login.legendshard.com.br",
+    "HOSTNAME": "home.youhide.com.br",
     "UPDATER_INTERVAL": 300 # in seconds
 }
 
