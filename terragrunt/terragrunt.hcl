@@ -1,6 +1,4 @@
 locals {
-  tfc_hostname     = "app.terraform.io" # For TFE, substitute the custom hostname for your TFE host
-  tfc_organization = "YouHide"
   workspace        = reverse(split("/", get_terragrunt_dir()))[0] # This will find the name of the module, such as "sqs"
 }
 
@@ -9,7 +7,7 @@ generate "remote_state" {
   if_exists = "overwrite"
   contents = <<EOF
 terraform {
-  required_version = "1.8.3"
+  required_version = "1.9.1"
   required_providers {
     proxmox = {
       source = "Telmate/proxmox"
@@ -17,12 +15,8 @@ terraform {
     }
   }
 
-  backend "remote" {
-    hostname = "${local.tfc_hostname}"
-    organization = "${local.tfc_organization}"
-    workspaces {
-      name = "${local.workspace}"
-    }
+  backend "local" {
+    path = "${get_terragrunt_dir()}/terraform.tfstate"
   }
 }
 
