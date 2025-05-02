@@ -23,7 +23,7 @@ resource "proxmox_lxc" "container" {
 
   // Terraform will crash without rootfs defined
   rootfs {
-    storage = "local-lvm"
+    storage = each.value.storage
     size    = each.value.disk_size
   }
 

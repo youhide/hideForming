@@ -16,6 +16,7 @@ variable "proxmox_lxc_parameters" {
     ssh_public_keys = string
     nesting         = bool
     disk_size       = string
+    storage         = string
     # network_type    = string
     network_bridge = string
   }))
@@ -35,6 +36,7 @@ variable "proxmox_lxc_parameters" {
     start           = true
     onboot          = true
     disk_size       = "16G"
+    storage         = "local"
     # network_type    = "virtio"
     network_bridge = "vmbr0"
   }]
