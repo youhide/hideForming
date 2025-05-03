@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../../modules/terraform/proxmox-lxc"
+  source = "${get_repo_root()}/modules/terraform/proxmox-lxc"
 }
 
 inputs = {
