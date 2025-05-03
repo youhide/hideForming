@@ -1,6 +1,6 @@
 output "containers" {
   description = "Information about all created Proxmox LXC containers"
-  value = {
+  value = length(proxmox_lxc.container) > 0 ? {
     for name, container in proxmox_lxc.container : name => {
       id           = container.id
       hostname     = container.hostname
@@ -11,5 +11,5 @@ output "containers" {
       unprivileged = container.unprivileged
       vmid         = container.vmid
     }
-  }
+  } : null
 }
