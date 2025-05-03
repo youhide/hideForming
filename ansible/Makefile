@@ -9,6 +9,10 @@ cronbox:                          ## Runs the playbook for the cronbox environme
 	@ansible-lint playbooks/cronbox.yml
 	@ansible-playbook --diff -i environments/hosts playbooks/cronbox.yml -u root
 
+atlantis:                          ## Runs the playbook for the atlantis environment. Ex. $ make atlantis
+	@ansible-lint playbooks/atlantis.yml
+	@ansible-playbook --diff -i environments/hosts playbooks/atlantis.yml -u root	
+
 terraform-agent:                  ## Runs the playbook for the terraform-agent environment. Ex. $ make terraform-agent
 	@ansible-lint playbooks/terraform-agent.yml
 	@ansible-playbook --diff -i environments/hosts playbooks/terraform-agent.yml -u root

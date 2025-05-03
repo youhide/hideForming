@@ -33,3 +33,12 @@ terraform-plan
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Terragrunt files
+.terragrunt-cache
+*.terragrunt-cache
+terragrunt/**/backend.tf
+terragrunt/**/provider.tf
+
+# MacOS
+.DS_Store

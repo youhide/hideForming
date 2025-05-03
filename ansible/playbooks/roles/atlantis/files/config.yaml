@@ -1,0 +1,19 @@
+# Configuração do Atlantis
+atlantis-url: "http://atlantis.localdomain:4141"
+port: 4141
+
+# Configurações do GitHub
+# gh-user: "SEU_USUÁRIO_GITHUB"
+# gh-token: "SEU_TOKEN_GITHUB"
+# gh-webhook-secret: "SEU_WEBHOOK_SECRET"
+gh-app-id: "1237669"
+gh-app-key-file: "/home/atlantis/github-app-key.pem"
+write-git-creds: true
+
+# Repositórios permitidos
+repo-allowlist: "github.com/youhide/hideForming"
+# Configurações avançadas
+# allow-repo-config: true
+
+# tf-download: false
+default-tf-version: 1.9.1

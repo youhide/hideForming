@@ -1,0 +1,18 @@
+[Unit]
+Description=Atlantis Terraform Pull Request Automation
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=atlantis
+WorkingDirectory=/home/atlantis
+Environment="PATH=/home/atlantis/.tofuenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+EnvironmentFile=/home/atlantis/.atlantis/atlantis.env
+ExecStart=/usr/local/bin/atlantis server --config=/home/atlantis/.atlantis/config.yaml --repo-config=/home/atlantis/.atlantis/repos.yaml
+
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

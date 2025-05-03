@@ -1,0 +1,42 @@
+---
+- name: Update repositories cache and install packages
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Copy Atlantis systemd service
+  ansible.builtin.template:
+    src: "{{ role_path }}/files/atlantis.service"
+    dest: "/etc/systemd/system/atlantis.service"
+    mode: "0644"
+    owner: root
+    group: root
+  notify: Systemctl daemon-reload
+
+- name: Copy atlantis config
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/config.yaml"
+    dest: "/home/atlantis/.atlantis/config.yaml"
+    mode: "0644"
+    owner: atlantis
+    group: atlantis
+  # notify: Restart Atlantis
+
+- name: Copy atlantis repos config
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/repos.yaml"
+    dest: "/home/atlantis/.atlantis/repos.yaml"
+    mode: "0644"
+    owner: atlantis
+    group: atlantis
+  # notify: Restart Atlantis
+
+- name: Create Atlantis environment file
+  ansible.builtin.template:
+    src: "templates/atlantis.env"
+    dest: "/home/atlantis/.atlantis/atlantis.env"
+    mode: "0600"
+    owner: atlantis
+    group: atlantis
+  register: env_file
+  no_log: true
+  notify: Restart Atlantis

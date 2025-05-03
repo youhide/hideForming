@@ -1,0 +1,11 @@
+---
+- name: Atlantis
+  hosts: atlantis
+  handlers:
+    - name: Import handlers
+      ansible.builtin.import_tasks: handlers/main.yml
+  gather_facts: true
+  vars_files:
+    - ../environments/cross_vars.yml
+  roles:
+    - atlantis

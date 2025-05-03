@@ -1,0 +1,50 @@
+repos:
+  - id: "/.*/"
+    workflow: terragrunt
+    pre_workflow_hooks:
+      - run: terragrunt-atlantis-config generate --output atlantis.yaml --autoplan --parallel --create-workspace
+
+workflows:
+  terragrunt:
+    plan:
+      steps:
+        - env:
+            name: TG_TF_PATH
+            value: "tofu"
+        - env:
+            # Reduce OpenTofu suggestion output
+            name: TF_IN_AUTOMATION
+            value: "true"
+        - run:
+            # Allow for targeted plans/applies as not supported for Terraform wrappers by default
+            command: terragrunt plan -input=false $(printf '%s' $COMMENT_ARGS | sed 's/,/ /g' | tr -d '\\') -no-color -out $PLANFILE
+            output: hide
+        - run: |
+            terragrunt show $PLANFILE
+    apply:
+      steps:
+        - env:
+            name: TG_TF_PATH
+            value: "tofu"
+        - env:
+            # Reduce OpenTofu suggestion output
+            name: TF_IN_AUTOMATION
+            value: "true"
+        - run: terragrunt apply -input=false $PLANFILE
+    import:
+      steps:
+        - env:
+            name: TG_TF_PATH
+            value: "tofu"
+        - env:
+            name: TF_VAR_author
+            command: 'git show -s --format="%ae" $HEAD_COMMIT'
+        # Allow for imports as not supported for Terraform wrappers by default
+        - run: terragrunt import -input=false $(printf '%s' $COMMENT_ARGS | sed 's/,/ /' | tr -d '\\')
+    state_rm:
+      steps:
+        - env:
+            name: TG_TF_PATH
+            value: "tofu"
+        # Allow for state removals as not supported for Terraform wrappers by default
+        - run: terragrunt state rm $(printf '%s' $COMMENT_ARGS | sed 's/,/ /' | tr -d '\\')
