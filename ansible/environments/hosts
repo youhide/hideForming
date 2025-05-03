@@ -12,3 +12,6 @@ legendshard.localdomain
 
 [legend_database]
 legend-database.localdomain
+
+[atlantis]
+atlantis.localdomain

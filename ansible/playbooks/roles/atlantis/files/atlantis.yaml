@@ -1,0 +1,71 @@
+# Configuração do Atlantis
+atlantis-url: "http://atlantis.localdomain:4141"
+port: 4141
+
+# Configurações do GitHub
+# gh-user: "SEU_USUÁRIO_GITHUB"
+# gh-token: "SEU_TOKEN_GITHUB"
+# gh-webhook-secret: "SEU_WEBHOOK_SECRET"
+gh-app-id: "1237669"
+gh-app-key-file: "/home/atlantis/github-app-key.pem"
+write-git-creds: true
+
+# Repositórios permitidos
+repo-allowlist: "github.com/youhide/*"
+
+# Configurações avançadas
+# allow-repo-config: true
+
+# tf-download: false
+default-tf-version: 1.9.1
+
+repos:
+  - id: "/.*/"
+    workflow: terragrunt
+    pre_workflow_hooks:
+      - run: terragrunt-atlantis-config generate --output atlantis.yaml --autoplan --parallel --create-workspace
+
+workflows:
+  terragrunt:
+    plan:
+      steps:
+        - env:
+            name: TERRAGRUNT_TFPATH
+            value: "/home/atlantis/.tofuenv/bin/tofu"
+        - env:
+            # Reduce OpenTofu suggestion output
+            name: TF_IN_AUTOMATION
+            value: "true"
+        - run:
+            # Allow for targeted plans/applies as not supported for Terraform wrappers by default
+            command: terragrunt plan -input=false $(printf '%s' $COMMENT_ARGS | sed 's/,/ /g' | tr -d '\\') -no-color -out $PLANFILE
+            output: hide
+        - run: |
+            terragrunt show $PLANFILE
+    apply:
+      steps:
+        - env:
+            name: TERRAGRUNT_TFPATH
+            value: "/home/atlantis/.tofuenv/bin/tofu"
+        - env:
+            # Reduce OpenTofu suggestion output
+            name: TF_IN_AUTOMATION
+            value: "true"
+        - run: terragrunt apply -input=false $PLANFILE
+    import:
+      steps:
+        - env:
+            name: TERRAGRUNT_TFPATH
+            value: "/home/atlantis/.tofuenv/bin/tofu"
+        - env:
+            name: TF_VAR_author
+            command: 'git show -s --format="%ae" $HEAD_COMMIT'
+        # Allow for imports as not supported for Terraform wrappers by default
+        - run: terragrunt import -input=false $(printf '%s' $COMMENT_ARGS | sed 's/,/ /' | tr -d '\\')
+    state_rm:
+      steps:
+        - env:
+            name: TERRAGRUNT_TFPATH
+            value: "/home/atlantis/.tofuenv/bin/tofu"
+        # Allow for state removals as not supported for Terraform wrappers by default
+        - run: terragrunt state rm $(printf '%s' $COMMENT_ARGS | sed 's/,/ /' | tr -d '\\')

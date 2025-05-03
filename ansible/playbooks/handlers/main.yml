@@ -1,5 +1,4 @@
 ---
-
 # System handlers
 
 - name: Systemctl daemon-reload
@@ -45,5 +44,11 @@
 - name: Restart MySQL
   ansible.builtin.service:
     name: mysql
+    state: restarted
+  become: true
+
+- name: Restart Atlantis
+  ansible.builtin.service:
+    name: atlantis
     state: restarted
   become: true
