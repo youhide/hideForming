@@ -7,7 +7,7 @@ terraform {
 }
 
 inputs = {
-  enabled = false
+  enabled = true
   proxmox_lxc_parameters = [
     {
       target_node     = "pveopti"
