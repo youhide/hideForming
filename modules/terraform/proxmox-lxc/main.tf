@@ -1,5 +1,5 @@
 resource "proxmox_lxc" "container" {
-  for_each = { for idx, param in var.proxmox_lxc_parameters : param.hostname != null ? param.hostname : "container-${idx}" => param }
+  for_each = var.enabled ? { for idx, param in var.proxmox_lxc_parameters : param.hostname != null ? param.hostname : "container-${idx}" => param } : {}
 
   target_node  = each.value.target_node
   hostname     = each.value.hostname

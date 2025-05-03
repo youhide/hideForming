@@ -1,3 +1,9 @@
+variable "enabled" {
+  description = "Enable or disable the module"
+  type        = bool
+  default     = true
+}
+
 variable "proxmox_lxc_parameters" {
   description = "Proxmox LXC parameters"
   type = list(object({

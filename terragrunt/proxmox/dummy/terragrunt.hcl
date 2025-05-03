@@ -7,10 +7,11 @@ terraform {
 }
 
 inputs = {
+  enabled = false
   proxmox_lxc_parameters = [
     {
       target_node     = "pveopti"
-      hostname        = "test"
+      hostname        = "dummy"
       ostemplate      = "omv-backup:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
       password        = "something"
       cpus            = 1
