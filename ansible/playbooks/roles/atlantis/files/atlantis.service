@@ -8,6 +8,7 @@ Type=simple
 User=atlantis
 WorkingDirectory=/home/atlantis
 Environment="PATH=/home/atlantis/.tofuenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+EnvironmentFile=/home/atlantis/.atlantis/atlantis.env
 ExecStart=/usr/local/bin/atlantis server --config=/home/atlantis/.atlantis/config.yaml --repo-config=/home/atlantis/.atlantis/repos.yaml
 
 Restart=always

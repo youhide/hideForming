@@ -28,4 +28,15 @@
     mode: "0644"
     owner: atlantis
     group: atlantis
+  # notify: Restart Atlantis
+
+- name: Create Atlantis environment file
+  ansible.builtin.template:
+    src: "templates/atlantis.env"
+    dest: "/home/atlantis/.atlantis/atlantis.env"
+    mode: "0600"
+    owner: atlantis
+    group: atlantis
+  register: env_file
+  no_log: true
   notify: Restart Atlantis
