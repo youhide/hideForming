@@ -15,7 +15,7 @@ workflows:
             # Reduce OpenTofu suggestion output
             name: TF_IN_AUTOMATION
             value: "true"
-        - run: if [ `cat /home/atlantis/.atlantis/users | grep -i "^$USERNAME$" | wc -l` != 1 ]; then echo "Not in users file" && exit 1; else echo "Authenticated"; fi
+        - run: if [ `cat /home/atlantis/.atlantis/users | grep -i "^$USER_NAME$" | wc -l` != 1 ]; then echo "Not in users file" && exit 1; else echo "Authenticated"; fi
         - run:
             # Allow for targeted plans/applies as not supported for Terraform wrappers by default
             command: terragrunt plan -input=false $(printf '%s' $COMMENT_ARGS | sed 's/,/ /g' | tr -d '\\') -no-color -out $PLANFILE
@@ -31,7 +31,7 @@ workflows:
             # Reduce OpenTofu suggestion output
             name: TF_IN_AUTOMATION
             value: "true"
-        - run: if [ `cat /home/atlantis/.atlantis/users | grep -i "^$USERNAME$" | wc -l` != 1 ]; then echo "Not in users file" && exit 1; else echo "Authenticated"; fi
+        - run: if [ `cat /home/atlantis/.atlantis/users | grep -i "^$USER_NAME$" | wc -l` != 1 ]; then echo "Not in users file" && exit 1; else echo "Authenticated"; fi
         - run: terragrunt apply -input=false $PLANFILE
     import:
       steps:
@@ -42,7 +42,7 @@ workflows:
             name: TF_VAR_author
             command: 'git show -s --format="%ae" $HEAD_COMMIT'
         # Allow for imports as not supported for Terraform wrappers by default
-        - run: if [ `cat /home/atlantis/.atlantis/users | grep -i "^$USERNAME$" | wc -l` != 1 ]; then echo "Not in users file" && exit 1; else echo "Authenticated"; fi
+        - run: if [ `cat /home/atlantis/.atlantis/users | grep -i "^$USER_NAME$" | wc -l` != 1 ]; then echo "Not in users file" && exit 1; else echo "Authenticated"; fi
         - run: terragrunt import -input=false $(printf '%s' $COMMENT_ARGS | sed 's/,/ /' | tr -d '\\')
     state_rm:
       steps:
@@ -50,5 +50,5 @@ workflows:
             name: TG_TF_PATH
             value: "tofu"
         # Allow for state removals as not supported for Terraform wrappers by default
-        - run: if [ `cat /home/atlantis/.atlantis/users | grep -i "^$USERNAME$" | wc -l` != 1 ]; then echo "Not in users file" && exit 1; else echo "Authenticated"; fi
+        - run: if [ `cat /home/atlantis/.atlantis/users | grep -i "^$USER_NAME$" | wc -l` != 1 ]; then echo "Not in users file" && exit 1; else echo "Authenticated"; fi
         - run: terragrunt state rm $(printf '%s' $COMMENT_ARGS | sed 's/,/ /' | tr -d '\\')
