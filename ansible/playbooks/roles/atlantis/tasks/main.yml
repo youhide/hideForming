@@ -14,8 +14,17 @@
 
 - name: Copy atlantis config
   ansible.builtin.copy:
-    src: "{{ role_path }}/files/atlantis.yaml"
+    src: "{{ role_path }}/files/config.yaml"
     dest: "/home/atlantis/.atlantis/config.yaml"
+    mode: "0644"
+    owner: atlantis
+    group: atlantis
+  # notify: Restart Atlantis
+
+- name: Copy atlantis repos config
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/repos.yaml"
+    dest: "/home/atlantis/.atlantis/repos.yaml"
     mode: "0644"
     owner: atlantis
     group: atlantis

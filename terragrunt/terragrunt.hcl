@@ -1,12 +1,12 @@
 locals {
   workspace         = reverse(split("/", get_terragrunt_dir()))[0]
 
-  pm_api_token_id     = run_cmd("pass", "show", "hideOut/Terraform/Proxmox/token_id")
-  pm_api_token_secret = run_cmd("pass", "show", "hideOut/Terraform/Proxmox/token_secret")
+  pm_api_token_id     = run_cmd("pass", "hideOut/Terraform/Proxmox/token_id")
+  pm_api_token_secret = run_cmd("pass", "hideOut/Terraform/Proxmox/token_secret")
 
   s3_bucket_name    = "tfstate"
-  s3_key            = run_cmd("pass", "show", "hideOut/OpenMediaVault/s3/access_key")
-  s3_secret_key     = run_cmd("pass", "show", "hideOut/OpenMediaVault/s3/secret_key")
+  s3_key            = run_cmd("pass", "hideOut/OpenMediaVault/s3/access_key")
+  s3_secret_key     = run_cmd("pass", "hideOut/OpenMediaVault/s3/secret_key")
 }
 
 generate "remote_state" {
