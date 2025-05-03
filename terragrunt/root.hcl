@@ -1,14 +1,12 @@
 locals {
   workspace         = reverse(split("/", get_terragrunt_dir()))[0]
-
-  is_pass_available = try(run_cmd("bash", "-c", "command -v pass"), "")
   
-  pm_api_token_id = local.is_pass_available != "" ? run_cmd("pass", "hideOut/Terraform/Proxmox/token_id") : get_env("TF_VAR_proxmox_token_id", "not_found")
-  pm_api_token_secret = local.is_pass_available != "" ? run_cmd("pass", "hideOut/Terraform/Proxmox/token_secret") : get_env("TF_VAR_proxmox_token_secret", "not_found")
+  pm_api_token_id = get_env("TF_VAR_proxmox_token_id", "not_found")
+  pm_api_token_secret = get_env("TF_VAR_proxmox_token_secret", "not_found")
   
   s3_bucket_name = "tfstate"
-  s3_key = local.is_pass_available != "" ? run_cmd("pass", "hideOut/OpenMediaVault/s3/access_key") : get_env("TF_VAR_s3_access_key", "not_found")
-  s3_secret_key = local.is_pass_available != "" ? run_cmd("pass", "hideOut/OpenMediaVault/s3/secret_key") : get_env("TF_VAR_s3_secret_key", "not_found")
+  s3_key = get_env("TF_VAR_s3_access_key", "not_found")
+  s3_secret_key = get_env("TF_VAR_s3_secret_key", "not_found")
 }
 
 generate "remote_state" {

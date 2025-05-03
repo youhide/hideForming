@@ -9,7 +9,7 @@ workflows:
     plan:
       steps:
         - env:
-            name: TERRAGRUNT_TFPATH
+            name: TG_TF_PATH
             value: "tofu"
         - env:
             # Reduce OpenTofu suggestion output
@@ -24,7 +24,7 @@ workflows:
     apply:
       steps:
         - env:
-            name: TERRAGRUNT_TFPATH
+            name: TG_TF_PATH
             value: "tofu"
         - env:
             # Reduce OpenTofu suggestion output
@@ -34,7 +34,7 @@ workflows:
     import:
       steps:
         - env:
-            name: TERRAGRUNT_TFPATH
+            name: TG_TF_PATH
             value: "tofu"
         - env:
             name: TF_VAR_author
@@ -44,7 +44,7 @@ workflows:
     state_rm:
       steps:
         - env:
-            name: TERRAGRUNT_TFPATH
+            name: TG_TF_PATH
             value: "tofu"
         # Allow for state removals as not supported for Terraform wrappers by default
         - run: terragrunt state rm $(printf '%s' $COMMENT_ARGS | sed 's/,/ /' | tr -d '\\')
