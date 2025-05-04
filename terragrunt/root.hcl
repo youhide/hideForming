@@ -1,9 +1,6 @@
 locals {
   workspace         = reverse(split("/", get_terragrunt_dir()))[0]
-  
-  pm_api_token_id = get_env("TF_VAR_proxmox_token_id", "not_found")
-  pm_api_token_secret = get_env("TF_VAR_proxmox_token_secret", "not_found")
-  
+
   s3_bucket_name = "tfstate"
   s3_key = get_env("TF_VAR_s3_access_key", "not_found")
   s3_secret_key = get_env("TF_VAR_s3_secret_key", "not_found")
@@ -20,6 +17,10 @@ terraform {
       source = "telmate/proxmox"
       version = "3.0.1-rc8"
     }
+    minio = {
+      source = "aminueza/minio"
+      version = "3.5.0"
+    }    
   }
 
   backend "s3" {
@@ -40,9 +41,11 @@ terraform {
 
 provider "proxmox" {
   pm_api_url          = "https://192.168.11.108:8006/api2/json"
-  pm_api_token_id     = "${local.pm_api_token_id}"
-  pm_api_token_secret = "${local.pm_api_token_secret}"
   pm_tls_insecure     = true
 }  
+
+provider minio {
+  minio_server   = "openmediavault.localdomain:9000"
+}
 EOF
 }
