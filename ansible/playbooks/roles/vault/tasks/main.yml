@@ -1,0 +1,262 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Install dependencies
+  ansible.builtin.package:
+    name:
+      - curl
+      - unzip
+      - jq
+      - gnupg2
+      - pass
+    state: present
+
+- name: Create Vault group
+  ansible.builtin.group:
+    name: "{{ vault_group }}"
+    system: true
+    state: present
+
+- name: Create Vault user
+  ansible.builtin.user:
+    name: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    system: true
+    create_home: false
+    shell: /sbin/nologin
+  register: vault_user_created
+
+- name: Create Vault directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: "0750"
+  with_items:
+    - "{{ vault_config_dir }}"
+    - "{{ vault_data_dir }}"
+
+# Download and installation of Vault
+- name: Download Vault
+  ansible.builtin.get_url:
+    url: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+    dest: "/tmp/vault_{{ vault_version }}_linux_amd64.zip"
+    mode: "0644"
+
+- name: Extract Vault
+  ansible.builtin.unarchive:
+    src: "/tmp/vault_{{ vault_version }}_linux_amd64.zip"
+    dest: "{{ vault_bin_dir }}"
+    remote_src: true
+  notify: Restart vault
+
+- name: Set Vault binary permissions
+  ansible.builtin.file:
+    path: "{{ vault_bin_dir }}/vault"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: "0755"
+
+# Vault Configuration
+- name: Create Vault configuration file
+  ansible.builtin.template:
+    src: "templates/vault.hcl"
+    dest: "{{ vault_config_dir }}/vault.hcl"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: "0640"
+  notify: Restart vault
+
+- name: Create Vault systemd service file
+  ansible.builtin.template:
+    src: "templates/vault.service"
+    dest: /etc/systemd/system/vault.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart vault
+
+- name: Enable and start Vault service
+  ansible.builtin.systemd:
+    name: vault
+    enabled: true
+    state: started
+    daemon_reload: true
+
+# Vault verification and initialization
+- name: Wait for Vault service to start
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr }}/v1/sys/health"
+    method: GET
+    status_code: [200, 429, 472, 500, 501, 503]
+  register: vault_health
+  until: vault_health.status != 500
+  retries: 10
+  delay: 2
+  failed_when: false
+
+- name: Check if Vault is initialized
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr }}/v1/sys/init"
+    method: GET
+    status_code: [200, 429, 500, 503]
+  register: vault_init_status
+  failed_when: false
+  changed_when: false
+
+- name: Debug initialization status
+  ansible.builtin.debug:
+    msg: "Vault initialization status: {{ 'Initialized' if vault_init_status.json.initialized | default(false) else 'Not initialized' }}"
+
+- name: Initialize Vault if not already initialized
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr }}/v1/sys/init"
+    method: POST
+    body_format: json
+    body:
+      secret_shares: 1
+      secret_threshold: 1
+    status_code: [200, 400]
+  register: vault_init_result
+  when: >-
+    vault_init_status.json is defined and
+    vault_init_status.json.initialized is defined and
+    not vault_init_status.json.initialized
+
+# Store in pass instead of saving to text file
+- name: Store Vault root token in pass
+  ansible.builtin.command: >
+    pass insert -m "hideOut/Vault/root_token" <<< "{{ vault_init_result.json.root_token }}"
+  when: >-
+    vault_init_result is defined and
+    vault_init_result.json is defined and
+    vault_init_result.json.root_token is defined
+  delegate_to: localhost
+  changed_when: true
+  no_log: true
+
+- name: Store Vault unseal key in pass
+  ansible.builtin.command: >
+    pass insert -m "hideOut/Vault/unseal_key" <<< "{{ vault_init_result.json.keys_base64[0] }}"
+  when: >-
+    vault_init_result is defined and
+    vault_init_result.json is defined and
+    vault_init_result.json.keys_base64 is defined
+  delegate_to: localhost
+  changed_when: true
+  no_log: true
+
+- name: Set unseal key and token from initialization
+  ansible.builtin.set_fact:
+    vault_token: "{{ vault_init_result.json.root_token | default('') }}"
+    vault_unseal_key: "{{ vault_init_result.json.keys_base64[0] | default('') }}"
+  when: vault_init_result is defined and vault_init_result.json is defined and vault_init_result.json.root_token is defined
+  no_log: true
+
+# Get credentials from pass if Vault is already initialized
+- name: Get Vault token from pass if available
+  ansible.builtin.command: pass show hideOut/Vault/root_token
+  register: pass_vault_token
+  delegate_to: localhost
+  failed_when: false
+  changed_when: false
+  no_log: true
+  when: >-
+    vault_token is not defined or vault_token == ''
+
+- name: Get Vault unseal key from pass if available
+  ansible.builtin.command: pass show hideOut/Vault/unseal_key
+  register: pass_vault_unseal
+  delegate_to: localhost
+  failed_when: false
+  changed_when: false
+  no_log: true
+  when: >-
+    vault_unseal_key is not defined or vault_unseal_key == ''
+
+- name: Set vault token and key from pass
+  ansible.builtin.set_fact:
+    vault_token: "{{ pass_vault_token.stdout | default('') }}"
+    vault_unseal_key: "{{ pass_vault_unseal.stdout | default('') }}"
+  when: >-
+    (vault_token is not defined or vault_token == '') and
+    pass_vault_token.rc is defined and pass_vault_token.rc == 0 and
+    pass_vault_unseal.rc is defined and pass_vault_unseal.rc == 0
+  no_log: true
+
+# Keep the option to get credentials from environment variables
+- name: Set vault token and key from environment if available
+  ansible.builtin.set_fact:
+    vault_token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+    vault_unseal_key: "{{ lookup('env', 'VAULT_UNSEAL_KEY') }}"
+  when: lookup('env', 'VAULT_TOKEN') != '' and lookup('env', 'VAULT_UNSEAL_KEY') != ''
+  no_log: true
+
+- name: Debug Vault token and unseal key
+  ansible.builtin.debug:
+    msg: >-
+      Token available: {{ 'Yes' if vault_token is defined and vault_token != '' else 'No' }} |
+      Unseal key available: {{ 'Yes' if vault_unseal_key is defined and vault_unseal_key != '' else 'No' }}
+
+- name: Check if Vault is sealed
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr }}/v1/sys/seal-status"
+    method: GET
+    status_code: [200, 429, 500, 503]
+  register: vault_seal_status
+  failed_when: false
+  changed_when: false
+
+- name: Unseal Vault if sealed
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr }}/v1/sys/unseal"
+    method: POST
+    body_format: json
+    body:
+      key: "{{ vault_unseal_key }}"
+    status_code: [200, 400, 500, 503]
+  register: unseal_result
+  when: >-
+    vault_unseal_key is defined and
+    vault_unseal_key != '' and
+    vault_seal_status.json is defined and
+    vault_seal_status.json.sealed | default(true)
+  failed_when: false
+  retries: 3
+  delay: 2
+  until: unseal_result.status == 200
+  notify: Check unsealed state
+
+# Vault Configuration - enable KV secrets engine
+- name: Enable KV secrets engine v2
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr }}/v1/sys/mounts/secret"
+    method: POST
+    headers:
+      X-Vault-Token: "{{ vault_token }}"
+    body_format: json
+    body:
+      type: "kv"
+      options:
+        version: "2"
+    status_code: [200, 204, 400, 403, 503]
+  register: kv_engine_result
+  failed_when: >-
+    kv_engine_result.status not in [200, 204] and
+    not (kv_engine_result.status == 400 and
+         kv_engine_result.json is defined and
+         kv_engine_result.json.errors is defined and
+         'path is already in use' in kv_engine_result.json.errors[0])
+  when: vault_token is defined and vault_token != ''
+
+# Synchronize secrets from pass to Vault if configured
+- name: Synchronize secrets from pass to Vault (including removal of unlisted secrets)
+  ansible.builtin.include_tasks: sync_secrets.yml
+  when: vault_secrets_to_sync is defined and vault_token is defined and vault_token != ''

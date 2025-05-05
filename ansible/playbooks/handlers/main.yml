@@ -52,3 +52,24 @@
     name: atlantis
     state: restarted
   become: true
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart vault
+  ansible.builtin.systemd:
+    name: vault
+    state: restarted
+
+- name: Check unsealed state
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr }}/v1/sys/seal-status"
+    method: GET
+    body_format: json
+    status_code: [200]
+  register: handler_vault_status
+  until: not handler_vault_status.json.sealed
+  retries: 3
+  delay: 2
+  failed_when: false

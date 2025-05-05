@@ -13,6 +13,10 @@ atlantis:                          ## Runs the playbook for the atlantis environ
 	@ansible-lint playbooks/atlantis.yml
 	@ansible-playbook --diff -i environments/hosts playbooks/atlantis.yml -u root	
 
+vault:                          ## Runs the playbook for the vault environment. Ex. $ make vault
+	@ansible-lint playbooks/vault.yml
+	@ansible-playbook --diff -i environments/hosts playbooks/vault.yml -u root	
+
 terraform-agent:                  ## Runs the playbook for the terraform-agent environment. Ex. $ make terraform-agent
 	@ansible-lint playbooks/terraform-agent.yml
 	@ansible-playbook --diff -i environments/hosts playbooks/terraform-agent.yml -u root

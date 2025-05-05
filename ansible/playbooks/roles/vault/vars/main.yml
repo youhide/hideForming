@@ -1,0 +1,33 @@
+---
+# Configurações do usuário e grupo
+vault_user: "vault"
+vault_group: "vault"
+
+# Versão do Vault a ser instalada
+vault_version: "1.19.3"
+
+# Diretórios de instalação e configuração
+vault_bin_dir: "/usr/local/bin"
+vault_config_dir: "/etc/vault.d"
+vault_data_dir: "/var/lib/vault"
+
+# Configurações de rede
+vault_port: "8200"
+vault_api_addr: "http://127.0.0.1:{{ vault_port }}"
+
+# Configuração para sincronização de secrets
+vault_pass_store_dir: "~/.password-store"
+vault_secrets_path: "secret/"
+
+# Lista de segredos para sincronizar do pass para o Vault
+# Formato: lista de caminhos relativos no passwordstore
+vault_secrets_to_sync:
+  - "TKA/Authentik/secret-key"
+  - "TKA/Authentik/postgresql-password"
+  - "TKA/Authentik/smtp-password"
+
+# Controle para remoção de segredos que não estão mais na lista
+vault_remove_unlisted_secrets: true
+
+# Nome do arquivo para rastrear segredos sincronizados anteriormente
+vault_tracked_secrets_file: "/etc/vault.d/.vault_synced_secrets"
