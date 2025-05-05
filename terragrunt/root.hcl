@@ -17,10 +17,18 @@ terraform {
       source = "telmate/proxmox"
       version = "3.0.1-rc8"
     }
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.36.0"
+    }    
+    helm = {
+      source = "hashicorp/helm"
+      version = "3.0.0-pre2"
+    }    
     minio = {
       source = "aminueza/minio"
       version = "3.5.0"
-    }    
+    }
   }
 
   backend "s3" {
@@ -43,6 +51,16 @@ provider "proxmox" {
   pm_api_url          = "https://192.168.11.108:8006/api2/json"
   pm_tls_insecure     = true
 }  
+
+provider "kubernetes" {
+  config_path    = "~/.kube/config"
+}
+
+provider "helm" {
+  kubernetes = {
+    config_path = "~/.kube/config"
+  }
+}
 
 provider minio {
   minio_server   = "openmediavault.localdomain:9000"
