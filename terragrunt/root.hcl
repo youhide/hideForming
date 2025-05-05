@@ -1,9 +1,5 @@
 locals {
   workspace         = reverse(split("/", get_terragrunt_dir()))[0]
-
-  s3_bucket_name = "tfstate"
-  s3_key = get_env("TF_VAR_s3_access_key", "not_found")
-  s3_secret_key = get_env("TF_VAR_s3_secret_key", "not_found")
 }
 
 generate "remote_state" {
@@ -41,9 +37,6 @@ terraform {
     skip_credentials_validation = true
     skip_metadata_api_check     = true
     skip_region_validation      = true
-    
-    access_key = "${local.s3_key}"
-    secret_key = "${local.s3_secret_key}"
   }
 }
 
