@@ -1,49 +1,69 @@
-# resource "kubernetes_namespace" "renovate" {
-#   metadata {
-#     name = "renovate"
-#   }
-# }
+resource "kubernetes_namespace" "renovate" {
+  metadata {
+    name = "renovate"
+  }
+}
 
-# resource "kubernetes_secret" "renovate_secrets" {
-#   metadata {
-#     name      = "renovate-env"
-#     namespace = kubernetes_namespace.renovate.metadata[0].name
-#   }
+resource "kubernetes_manifest" "renovate_external_secret" {
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"
+    kind       = "ExternalSecret"
+    metadata = {
+      name      = "renovate-vault-secrets"
+      namespace = kubernetes_namespace.renovate.metadata[0].name
+    }
+    spec = {
+      refreshInterval = "1h"
+      secretStoreRef = {
+        name = "vault-backend"
+        kind = "ClusterSecretStore"
+      }
+      target = {
+        name           = "renovate-env"
+        creationPolicy = "Owner"
+      }
+      data = [
+        {
+          secretKey = "RENOVATE_TOKEN"
+          remoteRef = {
+            key      = "hideOut-GitHub-RenovateApp-token"
+            property = "password"
+          }
+        }
+      ]
+    }
+  }
 
-#   data = {
-#     "RENOVATE_PLATFORM"   = "github"
-#     "RENOVATE_ENDPOINT"   = "https://api.github.com/"
-#     "RENOVATE_GIT_AUTHOR" = "YouHide Renovate Bot <youhide_renovate@none.com>"
-#     "RENOVATE_TOKEN"      = ""
-#   }
+  depends_on = [
+    kubernetes_namespace.renovate
+  ]
+}
 
-#   type = "Opaque"
-# }
+resource "helm_release" "renovate" {
+  name       = "renovate"
+  repository = "https://renovatebot.github.io/helm-charts"
+  chart      = "renovate"
+  version    = "40.8.1"
+  namespace  = kubernetes_namespace.renovate.metadata[0].name
+  timeout    = 600
 
-# resource "helm_release" "renovate" {
-#   name       = "renovate"
-#   repository = "https://renovatebot.github.io/helm-charts"
-#   chart      = "renovate"
-#   version    = "40.3.4"
-#   namespace  = kubernetes_namespace.renovate.metadata[0].name
-#   timeout    = 600
+  values = [<<EOF
+renovate:
+  config: |
+    {
+      "platform": "github",
+      "gitAuthor": "YouHide Renovate Bot <youhide_renovate@none.com>",
+      "dryRun": true,
+      "repositories": ["youhide/hideForming"]
+    }    
+envFrom:
+  - secretRef:
+      name: renovate-env
+  EOF    
+  ]
 
-#   values = [<<EOF
-# renovate:
-#   config: |
-#     {
-#       "dryRun": true,
-#       "repositories": ["youhide/hideForming"]
-#     }    
-# envFrom:
-#   - secretRef:
-#       name: renovate-env
-#   EOF    
-#   ]
-
-#   depends_on = [
-#     kubernetes_namespace.renovate,
-#     kubernetes_secret.renovate_secrets
-#   ]
-
-# }
+  depends_on = [
+    kubernetes_namespace.renovate,
+    kubernetes_manifest.renovate_external_secret
+  ]
+}
