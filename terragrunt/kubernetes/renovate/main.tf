@@ -14,10 +14,7 @@
 #     "RENOVATE_PLATFORM"   = "github"
 #     "RENOVATE_ENDPOINT"   = "https://api.github.com/"
 #     "RENOVATE_GIT_AUTHOR" = "YouHide Renovate Bot <youhide_renovate@none.com>"
-#     "RENOVATE_APP_NAME"   = "YouHide Renovate"
 #     "RENOVATE_TOKEN"      = ""
-#     "RENOVATE_APP_ID"     = "1241886"
-#     "RENOVATE_APP_KEY"    = ""
 #   }
 
 #   type = "Opaque"

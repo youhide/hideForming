@@ -9,6 +9,10 @@ generate "remote_state" {
 terraform {
   required_version = "1.9.1"
   required_providers {
+    vault = {
+      source = "hashicorp/vault"
+      version = "4.8.0"
+    }  
     proxmox = {
       source = "telmate/proxmox"
       version = "3.0.1-rc8"
@@ -38,6 +42,10 @@ terraform {
     skip_metadata_api_check     = true
     skip_region_validation      = true
   }
+}
+
+provider "vault" {
+  address = "http://vault.localdomain:8200"
 }
 
 provider "proxmox" {
