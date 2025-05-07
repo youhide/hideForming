@@ -25,6 +25,10 @@ terraform {
       source = "hashicorp/helm"
       version = "3.0.0-pre2"
     }    
+    kubectl = {
+      source = "gavinbunney/kubectl"
+      version = "1.19.0"
+    }    
     minio = {
       source = "aminueza/minio"
       version = "3.5.0"
@@ -55,6 +59,10 @@ provider "proxmox" {
 
 provider "kubernetes" {
   config_path    = "~/.kube/config"
+}
+
+provider "kubectl" {
+  config_path = "~/.kube/config"
 }
 
 provider "helm" {

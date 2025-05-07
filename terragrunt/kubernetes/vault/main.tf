@@ -147,36 +147,67 @@ resource "vault_kubernetes_auth_backend_role" "external_secrets" {
   token_policies                   = [vault_policy.external_secrets.name]
 }
 
-resource "kubernetes_manifest" "vault_secret_store" {
-  manifest = {
-    apiVersion = "external-secrets.io/v1beta1"
-    kind       = "ClusterSecretStore"
-    metadata = {
-      name = "vault-backend"
-    }
-    spec = {
-      provider = {
-        vault = {
-          server  = var.vault_addr
-          path    = "secret"
-          version = "v2"
-          auth = {
-            kubernetes = {
-              mountPath = vault_auth_backend.kubernetes.path
-              role      = vault_kubernetes_auth_backend_role.external_secrets.role_name
-              serviceAccountRef = {
-                name      = "external-secrets"
-                namespace = "external-secrets"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+# resource "kubernetes_manifest" "vault_secret_store" {
+#   manifest = {
+#     apiVersion = "external-secrets.io/v1beta1"
+#     kind       = "ClusterSecretStore"
+#     metadata = {
+#       name = "vault-backend"
+#     }
+#     spec = {
+#       provider = {
+#         vault = {
+#           server  = var.vault_addr
+#           path    = "secret"
+#           version = "v2"
+#           auth = {
+#             kubernetes = {
+#               mountPath = vault_auth_backend.kubernetes.path
+#               role      = vault_kubernetes_auth_backend_role.external_secrets.role_name
+#               serviceAccountRef = {
+#                 name      = "external-secrets"
+#                 namespace = "external-secrets"
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+
+#   depends_on = [
+#     helm_release.external_secrets,
+#     vault_kubernetes_auth_backend_role.external_secrets
+#   ]
+# }
+
+resource "kubectl_manifest" "vault_secret_store" {
+  yaml_body = <<-EOF
+    apiVersion: external-secrets.io/v1beta1
+    kind: ClusterSecretStore
+    metadata:
+      name: vault-backend
+    spec:
+      provider:
+        vault:
+          server: ${var.vault_addr}
+          path: secret
+          version: v2
+          auth:
+            kubernetes:
+              mountPath: ${vault_auth_backend.kubernetes.path}
+              role: ${vault_kubernetes_auth_backend_role.external_secrets.role_name}
+              serviceAccountRef:
+                name: external-secrets
+                namespace: external-secrets
+  EOF
 
   depends_on = [
     helm_release.external_secrets,
+    kubernetes_namespace.external_secrets,
+    kubernetes_secret.external_secrets_token,
+    vault_auth_backend.kubernetes,
     vault_kubernetes_auth_backend_role.external_secrets
   ]
+
 }
