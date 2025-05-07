@@ -15,19 +15,12 @@ resource "helm_release" "external_secrets" {
   namespace  = kubernetes_namespace.external_secrets.metadata[0].name
   timeout    = 600
 
-  set = [
-    {
-      name  = "installCRDs"
-      value = "true"
-    },
-    {
-      name  = "serviceAccount.create"
-      value = "true"
-    },
-    {
-      name  = "serviceAccount.name"
-      value = "external-secrets"
-    }
+  values = [<<EOF
+installCRDs: true
+serviceAccount:
+  create: true
+  name: external-secrets
+EOF  
   ]
 
   depends_on = [
@@ -154,7 +147,6 @@ resource "vault_kubernetes_auth_backend_role" "external_secrets" {
   token_policies                   = [vault_policy.external_secrets.name]
 }
 
-# Create ClusterSecretStore ( NEEDS TO BE DEPLOYED IN TWO STEPS WAY, COMMENT THIS FOR FIRST DEPLOYMENT )
 resource "kubernetes_manifest" "vault_secret_store" {
   manifest = {
     apiVersion = "external-secrets.io/v1beta1"

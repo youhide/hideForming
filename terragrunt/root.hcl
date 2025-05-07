@@ -63,7 +63,7 @@ provider "helm" {
   }
 }
 
-provider minio {
+provider "minio" {
   minio_server   = "openmediavault.localdomain:9000"
 }
 EOF
