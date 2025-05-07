@@ -4,19 +4,53 @@ resource "kubernetes_namespace" "authentik" {
   }
 }
 
-resource "kubernetes_secret" "authentik_secrets" {
-  metadata {
-    name      = "authentik-secrets"
-    namespace = kubernetes_namespace.authentik.metadata[0].name
+resource "kubernetes_manifest" "authentik_external_secret" {
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"
+    kind       = "ExternalSecret"
+    metadata = {
+      name      = "authentik-vault-secrets"
+      namespace = kubernetes_namespace.authentik.metadata[0].name
+    }
+    spec = {
+      refreshInterval = "1h"
+      secretStoreRef = {
+        name = "vault-backend"
+        kind = "ClusterSecretStore"
+      }
+      target = {
+        name           = "authentik-secrets"
+        creationPolicy = "Owner"
+      }
+      data = [
+        {
+          secretKey = "postgresql-password"
+          remoteRef = {
+            key      = "TKA-Authentik-postgresql-password"
+            property = "password"
+          }
+        },
+        {
+          secretKey = "authentik-secret-key"
+          remoteRef = {
+            key      = "TKA-Authentik-secret-key"
+            property = "password"
+          }
+        },
+        {
+          secretKey = "smtp-password"
+          remoteRef = {
+            key      = "TKA-Authentik-smtp-password"
+            property = "password"
+          }
+        }
+      ]
+    }
   }
 
-  # data = {
-  #   "authentik-secret-key" = ""
-  #   "postgresql-password"  = ""
-  #   "smtp-password"        = ""
-  # }
-
-  type = "Opaque"
+  depends_on = [
+    kubernetes_namespace.authentik
+  ]
 }
 
 resource "helm_release" "authentik" {
@@ -75,6 +109,6 @@ EOF
 
   depends_on = [
     kubernetes_namespace.authentik,
-    kubernetes_secret.authentik_secrets
+    kubernetes_manifest.authentik_external_secret
   ]
 }
