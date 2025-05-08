@@ -84,6 +84,15 @@ resource "helm_release" "authentik" {
             }
           },
           {
+            name = "AUTHENTIK_BOOTSTRAP_PASSWORD"
+            valueFrom = {
+              secretKeyRef = {
+                name = "authentik-secrets"
+                key  = "postgresql-password"
+              }
+            }
+          },
+          {
             name = "POSTGRES_PASSWORD"
             valueFrom = {
               secretKeyRef = {
@@ -95,12 +104,13 @@ resource "helm_release" "authentik" {
         ]
       }
       authentik = {
+        bootstrap_email = "youri@youhide.com.br"
         email = {
           host     = "smtp.mailgun.org"
           port     = 587
           username = "postmaster@mg.tkasolutions.com.br"
           use_tls  = true
-          from     = "postmaster@mg.tkasolutions.com.br"
+          from     = "Authentik <postmaster@mg.tkasolutions.com.br>"
         }
       }
       server = {
@@ -114,6 +124,14 @@ resource "helm_release" "authentik" {
       }
       postgresql = {
         enabled = true
+        primary = {
+          persistence = {
+            storageClass = "longhorn"
+            accessModes  = ["ReadWriteOnce"]
+            volumeName : "authentik-postgres-volume"
+            size = "4Gi"
+          }
+        }
         auth = {
           existingSecret = "authentik-secrets"
           secretKeys = {
@@ -123,6 +141,14 @@ resource "helm_release" "authentik" {
       }
       redis = {
         enabled = true
+        master = {
+          persistence = {
+            storageClass = "longhorn"
+            accessModes  = ["ReadWriteOnce"]
+            volumeName : "authentik-redis-volume"
+            size = "2Gi"
+          }
+        }
       }
     })
   ]

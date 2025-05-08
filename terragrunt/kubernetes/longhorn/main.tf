@@ -87,3 +87,23 @@ resource "helm_release" "longhorn" {
     kubernetes_manifest.longhorn_external_secret
   ]
 }
+
+resource "kubernetes_manifest" "longhorn_daily_backup" {
+  manifest = {
+    "apiVersion" = "longhorn.io/v1beta1"
+    "kind"       = "RecurringJob"
+    "metadata" = {
+      "name"      = "daily-backup"
+      "namespace" = "longhorn-system"
+    }
+    "spec" = {
+      "concurrency" = 1
+      "cron"        = "0 1 * * *"
+      "groups" = [
+        "default",
+      ]
+      "retain" = 3
+      "task"   = "backup-force-create"
+    }
+  }
+}
