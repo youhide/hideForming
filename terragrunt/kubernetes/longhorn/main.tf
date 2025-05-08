@@ -78,13 +78,16 @@ resource "helm_release" "longhorn" {
   namespace  = kubernetes_namespace.longhorn_system.metadata[0].name
   timeout    = 600
 
-  values = [<<EOF
-defaultBackupStore:
-  backupTarget: s3://longhorn@us-east-1/
-  backupTargetCredentialSecret: longhorn-secrets
-longhornUI:
-  replicas: 1
-  EOF
+  values = [
+    yamlencode({
+      defaultBackupStore = {
+        backupTarget                 = "s3://longhorn@us-east-1/"
+        backupTargetCredentialSecret = "longhorn-secrets"
+      }
+      longhornUI = {
+        replicas = 1
+      }
+    })
   ]
 
   depends_on = [

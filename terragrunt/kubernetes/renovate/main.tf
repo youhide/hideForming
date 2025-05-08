@@ -47,18 +47,37 @@ resource "helm_release" "renovate" {
   namespace  = kubernetes_namespace.renovate.metadata[0].name
   timeout    = 600
 
-  values = [<<EOF
-renovate:
-  config: |
-    {
-      "platform": "github",
-      "gitAuthor": "YouHide Renovate Bot <youhide_renovate@none.com>",
-      "repositories": ["youhide/hideForming"]
-    }    
-envFrom:
-  - secretRef:
-      name: renovate-env
-  EOF    
+  #   values = [<<EOF
+  # renovate:
+  #   config: |
+  #     {
+  #       "platform": "github",
+  #       "gitAuthor": "YouHide Renovate Bot <youhide_renovate@none.com>",
+  #       "repositories": ["youhide/hideForming"]
+  #     }    
+  # envFrom:
+  #   - secretRef:
+  #       name: renovate-env
+  #   EOF    
+  #   ]
+
+  values = [
+    yamlencode({
+      renovate = {
+        config = jsonencode({
+          platform     = "github"
+          gitAuthor    = "YouHide Renovate Bot <youhide_renovate@none.com>"
+          repositories = ["youhide/hideForming"]
+        })
+      }
+      envFrom = [
+        {
+          secretRef = {
+            name = "renovate-env"
+          }
+        }
+      ]
+    })
   ]
 
   depends_on = [

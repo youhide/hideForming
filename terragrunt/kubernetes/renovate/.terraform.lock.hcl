@@ -6,6 +6,7 @@ provider "registry.opentofu.org/aminueza/minio" {
   constraints = "3.5.0"
   hashes = [
     "h1:IXpUl+99Vz+EQvnqDu0UFsPWQzr9fxB7KtiaWpKaW24=",
+    "h1:d04N7jzbqcYYO1U9JQQIipqcMzeSsqJlEeUL46AFnFo=",
     "zh:0d16bcd1c4cabec8049348775499339c5434ff4c3b74e738250783014093c4d0",
     "zh:22d8632a54661e542f5d672f485e5901d5d9d97ac26f3cdda3cd07ad7680330f",
     "zh:28baf27b45612539944d3fedd67855217009c914cf695d4ad24668770e5af947",
@@ -25,6 +26,7 @@ provider "registry.opentofu.org/gavinbunney/kubectl" {
   version     = "1.19.0"
   constraints = "1.19.0"
   hashes = [
+    "h1:3E8E5zdLYTLsP9h+Ibvez8m+S0Qqa7QULHvcq8PcnWg=",
     "h1:9QkxPjp0x5FZFfJbE+B7hBOoads9gmdfj9aYu5N4Sfc=",
     "zh:1dec8766336ac5b00b3d8f62e3fff6390f5f60699c9299920fc9861a76f00c71",
     "zh:43f101b56b58d7fead6a511728b4e09f7c41dc2e3963f59cf1c146c4767c6cb7",
@@ -49,6 +51,7 @@ provider "registry.opentofu.org/hashicorp/helm" {
   constraints = "3.0.0-pre2"
   hashes = [
     "h1:9lyuKApnwfKwBk93S300VrrSeZjCClF3EafrPyCtw1w=",
+    "h1:9thP25mY/sjK/OtTz3E+g4pumoFa7JVsOD5VUiuBYrc=",
     "zh:1c3a224a852c64bb8c8e0652e7770c61d519be66ee9b43ebddfa1f9f64e6e151",
     "zh:2200e69ed1aec5eb81d3d6dfaa9d3320ff1c7711decdb7541f85ef8d58137061",
     "zh:24631b42f12073c09017a25d3bf80c834f540356906e2d80e042b1c74b691c78",
@@ -66,6 +69,7 @@ provider "registry.opentofu.org/hashicorp/kubernetes" {
   version     = "2.36.0"
   constraints = "2.36.0"
   hashes = [
+    "h1:1deJVlD/5BXO0Mx9IKpNFFN+fyYfl4E6tlVquUOkyAs=",
     "h1:eHxAqiBgRe3rEy9aXtOrW/kEr33cyXBonseKSDdXwlw=",
     "zh:15e42a6f8c6be77e0266edfb3765065c01e8fbcc8d75c794f1442f39cd9e6cfb",
     "zh:2387195e7c80bc3ba93162c5c755482828b309a275d170e0c329145894dc6cb2",
@@ -85,6 +89,7 @@ provider "registry.opentofu.org/hashicorp/vault" {
   constraints = "4.8.0"
   hashes = [
     "h1:SQkjClJDo6SETUnq912GO8BdEExhU1ko8IG2mr4X/2A=",
+    "h1:Xkng5aIS3+CgbXWtoJxWsF+rV3WCpwjXV9++S6PP17A=",
     "zh:0c07ef884c03083b08a54c2cf782f3ff7e124b05e7a4438a0b90a86e60c8d080",
     "zh:13dcf2ed494c79e893b447249716d96b665616a868ffaf8f2c5abef07c7eee6f",
     "zh:6f15a29fae3a6178e5904e3c95ba22b20f362d8ee491da816048c89f30e6b2de",
@@ -102,6 +107,7 @@ provider "registry.opentofu.org/telmate/proxmox" {
   version     = "3.0.1-rc8"
   constraints = "3.0.1-rc8"
   hashes = [
+    "h1:HnVfMbsLeMc3c3CBqGXsXWTRFPLx0XdvrGTeO/DnPlk=",
     "h1:W5X4T5AZUaqO++aAequNECUKJaXLC5upcws6Vp7mkBk=",
     "zh:0272f1600251abf9b139c2683f83cde0a907ac762f5ead058b84de18ddc1d78e",
     "zh:328e708a8063a133516612b17c8983a9372fa42766530925d1d37aeb1daa30ec",

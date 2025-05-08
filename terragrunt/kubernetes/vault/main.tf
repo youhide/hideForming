@@ -15,12 +15,14 @@ resource "helm_release" "external_secrets" {
   namespace  = kubernetes_namespace.external_secrets.metadata[0].name
   timeout    = 600
 
-  values = [<<EOF
-installCRDs: true
-serviceAccount:
-  create: true
-  name: external-secrets
-EOF  
+  values = [
+    yamlencode({
+      installCRDs = true
+      serviceAccount = {
+        create = true
+        name   = "external-secrets"
+      }
+    })
   ]
 
   depends_on = [

@@ -61,50 +61,70 @@ resource "helm_release" "authentik" {
   namespace  = kubernetes_namespace.authentik.metadata[0].name
   timeout    = 600
 
-  values = [<<EOF
-global:
-  env:
-    - name: AUTHENTIK_SECRET_KEY
-      valueFrom:
-        secretKeyRef:
-          name: authentik-secrets
-          key: authentik-secret-key
-    - name: AUTHENTIK_EMAIL__PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: authentik-secrets
-          key: smtp-password
-    - name: POSTGRES_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: authentik-secrets
-          key: postgresql-password
-
-authentik:
-  email:
-    host: "smtp.mailgun.org"
-    port: 587
-    username: "postmaster@mg.tkasolutions.com.br"
-    use_tls: true
-    from: "postmaster@mg.tkasolutions.com.br"
-
-server:
-  ingress:
-    # Specify kubernetes ingress controller class name
-    ingressClassName: traefik
-    enabled: true
-    hosts:
-      - auth.tkasolutions.com.br
-
-postgresql:
-  enabled: true
-  auth:
-    existingSecret: authentik-secrets
-    secretKeys: 
-      userPasswordKey: postgresql-password
-redis:
-  enabled: true
-EOF
+  values = [
+    yamlencode({
+      global = {
+        env = [
+          {
+            name = "AUTHENTIK_SECRET_KEY"
+            valueFrom = {
+              secretKeyRef = {
+                name = "authentik-secrets"
+                key  = "authentik-secret-key"
+              }
+            }
+          },
+          {
+            name = "AUTHENTIK_EMAIL__PASSWORD"
+            valueFrom = {
+              secretKeyRef = {
+                name = "authentik-secrets"
+                key  = "smtp-password"
+              }
+            }
+          },
+          {
+            name = "POSTGRES_PASSWORD"
+            valueFrom = {
+              secretKeyRef = {
+                name = "authentik-secrets"
+                key  = "postgresql-password"
+              }
+            }
+          }
+        ]
+      }
+      authentik = {
+        email = {
+          host     = "smtp.mailgun.org"
+          port     = 587
+          username = "postmaster@mg.tkasolutions.com.br"
+          use_tls  = true
+          from     = "postmaster@mg.tkasolutions.com.br"
+        }
+      }
+      server = {
+        ingress = {
+          ingressClassName = "traefik"
+          enabled          = true
+          hosts = [
+            "auth.tkasolutions.com.br"
+          ]
+        }
+      }
+      postgresql = {
+        enabled = true
+        auth = {
+          existingSecret = "authentik-secrets"
+          secretKeys = {
+            userPasswordKey = "postgresql-password"
+          }
+        }
+      }
+      redis = {
+        enabled = true
+      }
+    })
   ]
 
   depends_on = [
