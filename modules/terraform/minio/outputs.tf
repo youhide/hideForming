@@ -9,3 +9,22 @@ output "buckets" {
     }
   } : null
 }
+
+output "service_accounts" {
+  description = "Information about all created MinIO service accounts"
+  value = length(minio_iam_service_account.user_sa) > 0 ? {
+    for name, sa in minio_iam_service_account.user_sa : name => {
+      id          = sa.id
+      access_key  = sa.access_key
+      secret_key  = sa.secret_key
+      target_user = sa.target_user
+      key         = name
+    }
+  } : null
+  sensitive = true
+}
+
+output "service_account_keys" {
+  description = "Keys of all created MinIO service accounts, useful for dependencies"
+  value       = length(minio_iam_service_account.user_sa) > 0 ? keys(minio_iam_service_account.user_sa) : []
+}

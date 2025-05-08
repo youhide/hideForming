@@ -53,7 +53,6 @@ renovate:
     {
       "platform": "github",
       "gitAuthor": "YouHide Renovate Bot <youhide_renovate@none.com>",
-      "dryRun": true,
       "repositories": ["youhide/hideForming"]
     }    
 envFrom:

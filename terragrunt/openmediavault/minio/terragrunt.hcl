@@ -7,12 +7,12 @@ terraform {
 }
 
 inputs = {
-  enabled = false
+  enabled = true
 
   minio_parameters = [
     {
-      bucket_name   = "test"
-      bucket_acl    = "public"
+      bucket_name   = "longhorn"
+      bucket_acl    = "private"
       force_destroy = true
     }
   ]
