@@ -7,10 +7,9 @@ resource "kubernetes_namespace" "longhorn_system" {
 resource "vault_generic_secret" "longhorn_secrets" {
   path = "secret/TF-Longhorn-s3-keys"
   data_json = jsonencode({
-    "access-key"           = var.bucket_access_key,
-    "secret-key"           = var.bucket_secret_key,
-    "endpoint"             = "http://openmediavault.localdomain:9000/"
-    "virtual_hosted_style" = true
+    "access-key" = var.bucket_access_key,
+    "secret-key" = var.bucket_secret_key,
+    "endpoint"   = "http://openmediavault.localdomain:9000/"
   })
 }
 
@@ -52,13 +51,6 @@ resource "kubernetes_manifest" "longhorn_external_secret" {
           remoteRef = {
             key      = "secret/TF-Longhorn-s3-keys"
             property = "endpoint"
-          }
-        },
-        {
-          secretKey = "VIRTUAL_HOSTED_STYLE"
-          remoteRef = {
-            key      = "secret/TF-Longhorn-s3-keys"
-            property = "virtual_hosted_style"
           }
         }
       ]

@@ -10,21 +10,14 @@ resource "minio_iam_policy" "policy" {
       "Effect": "Allow",
       "Action": [
         "s3:GetBucketLocation",
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::${each.value.bucket_name}"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
+        "s3:ListBucket",
         "s3:GetObject",
         "s3:PutObject",
-        "s3:DeleteObject"
+        "s3:DeleteObject"        
       ],
       "Resource": [
-          "arn:aws:s3:::${each.value.bucket_name}/*"
+        "arn:aws:s3:::${each.value.bucket_name}",
+        "arn:aws:s3:::${each.value.bucket_name}/*"
       ]
     }
   ]

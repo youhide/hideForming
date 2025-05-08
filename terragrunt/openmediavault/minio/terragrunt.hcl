@@ -13,7 +13,7 @@ inputs = {
     {
       bucket_name   = "longhorn"
       bucket_acl    = "private"
-      force_destroy = true
+      force_destroy = false
     }
   ]
 }
