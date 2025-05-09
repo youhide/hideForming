@@ -25,6 +25,10 @@ terraform {
       source = "hashicorp/helm"
       version = "3.0.0-pre2"
     }    
+    authentik = {
+      source = "goauthentik/authentik"
+      version = "2025.4.0"
+    }    
     kubectl = {
       source = "gavinbunney/kubectl"
       version = "1.19.0"
@@ -46,10 +50,6 @@ terraform {
     skip_metadata_api_check     = true
     skip_region_validation      = true
   }
-}
-
-provider "vault" {
-  address = "http://vault.localdomain:8200"
 }
 
 provider "proxmox" {

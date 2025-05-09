@@ -25,12 +25,13 @@ vault_secrets_to_sync:
   - "TKA/Authentik/secret-key"
   - "TKA/Authentik/postgresql-password"
   - "TKA/Authentik/smtp-password"
+  - "TKA/Authentik/token"
   - "hideOut/GitHub/RenovateApp/client_id"
   - "hideOut/GitHub/RenovateApp/key"
   - "hideOut/GitHub/RenovateApp/token"
 
 # Controle para remoção de segredos que não estão mais na lista
-vault_remove_unlisted_secrets: true
+vault_remove_unlisted_secrets: false
 
 # Nome do arquivo para rastrear segredos sincronizados anteriormente
 vault_tracked_secrets_file: "/etc/vault.d/.vault_synced_secrets"

@@ -6,3 +6,6 @@ atlantis_s3_secret_key: "{{ lookup('community.general.passwordstore', 'hideOut/O
 atlantis_s3_user: "{{ lookup('community.general.passwordstore', 'hideOut/OpenMediaVault/s3/user') }}"
 atlantis_s3_pass: "{{ lookup('community.general.passwordstore', 'hideOut/OpenMediaVault/s3/pass') }}"
 atlantis_vault_token: "{{ lookup('community.general.passwordstore', 'hideOut/Vault/root_token') }}"
+atlantis_vault_addr: "{{ lookup('community.general.passwordstore', 'hideOut/Vault/addr') }}"
+atlantis_authentik_url: "{{ lookup('community.general.passwordstore', 'TKA/Authentik/url') }}"
+atlantis_authentik_token: "{{ lookup('community.general.passwordstore', 'TKA/Authentik/token') }}"

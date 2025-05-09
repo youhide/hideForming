@@ -43,6 +43,13 @@ resource "kubernetes_manifest" "authentik_external_secret" {
             key      = "TKA-Authentik-smtp-password"
             property = "password"
           }
+        },
+        {
+          secretKey = "token"
+          remoteRef = {
+            key      = "TKA-Authentik-token"
+            property = "password"
+          }
         }
       ]
     }
@@ -88,7 +95,16 @@ resource "helm_release" "authentik" {
             valueFrom = {
               secretKeyRef = {
                 name = "authentik-secrets"
-                key  = "postgresql-password"
+                key  = "token"
+              }
+            }
+          },
+          {
+            name = "AUTHENTIK_BOOTSTRAP_TOKEN"
+            valueFrom = {
+              secretKeyRef = {
+                name = "authentik-secrets"
+                key  = "token"
               }
             }
           },
