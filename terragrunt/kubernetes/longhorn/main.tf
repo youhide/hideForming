@@ -72,38 +72,50 @@ resource "helm_release" "longhorn" {
 
   values = [
     yamlencode({
+      defaultSettings = {
+        systemManagedComponentsNodeSelector = "!node-role.kubernetes.io/master"
+      }
       defaultBackupStore = {
         backupTarget                 = "s3://longhorn@us-east-1/"
         backupTargetCredentialSecret = "longhorn-secrets"
       }
+      persistence = {
+        defaultClassReplicaCount = 2
+      }
       longhornUI = {
         replicas = 1
       }
+      # service = {
+      #   ui = {
+      #     enabled = true
+      #     type    = "LoadBalancer"
+      #   }
+      # }
     })
   ]
 
   depends_on = [
-    kubernetes_namespace.longhorn_system,
     kubernetes_manifest.longhorn_external_secret
   ]
 }
 
-resource "kubernetes_manifest" "longhorn_daily_backup" {
-  manifest = {
-    "apiVersion" = "longhorn.io/v1beta1"
-    "kind"       = "RecurringJob"
-    "metadata" = {
-      "name"      = "daily-backup"
-      "namespace" = "longhorn-system"
-    }
-    "spec" = {
-      "concurrency" = 1
-      "cron"        = "0 1 * * *"
-      "groups" = [
-        "default",
-      ]
-      "retain" = 3
-      "task"   = "backup-force-create"
-    }
-  }
+resource "kubectl_manifest" "longhorn_daily_backup" {
+  yaml_body = <<YAML
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: daily-backup
+  namespace: longhorn-system
+spec:
+  concurrency: 1
+  cron: "0 1 * * *"
+  groups:
+    - default
+  retain: 3
+  task: backup-force-create
+YAML
+
+  depends_on = [
+    helm_release.longhorn
+  ]
 }
