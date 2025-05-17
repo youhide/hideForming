@@ -15,7 +15,7 @@ resource "vault_generic_secret" "longhorn_secrets" {
 
 resource "kubernetes_manifest" "longhorn_external_secret" {
   manifest = {
-    apiVersion = "external-secrets.io/v1beta1"
+    apiVersion = "external-secrets.io/v1"
     kind       = "ExternalSecret"
     metadata = {
       name      = "longhorn-vault-secrets"

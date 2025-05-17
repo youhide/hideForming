@@ -6,7 +6,7 @@ resource "kubernetes_namespace" "renovate" {
 
 resource "kubernetes_manifest" "renovate_external_secret" {
   manifest = {
-    apiVersion = "external-secrets.io/v1beta1"
+    apiVersion = "external-secrets.io/v1"
     kind       = "ExternalSecret"
     metadata = {
       name      = "renovate-vault-secrets"

@@ -151,7 +151,7 @@ resource "vault_kubernetes_auth_backend_role" "external_secrets" {
 
 # resource "kubernetes_manifest" "vault_secret_store" {
 #   manifest = {
-#     apiVersion = "external-secrets.io/v1beta1"
+#     apiVersion = "external-secrets.io/v1"
 #     kind       = "ClusterSecretStore"
 #     metadata = {
 #       name = "vault-backend"
@@ -185,7 +185,7 @@ resource "vault_kubernetes_auth_backend_role" "external_secrets" {
 
 resource "kubectl_manifest" "vault_secret_store" {
   yaml_body = <<-EOF
-    apiVersion: external-secrets.io/v1beta1
+    apiVersion: external-secrets.io/v1
     kind: ClusterSecretStore
     metadata:
       name: vault-backend
