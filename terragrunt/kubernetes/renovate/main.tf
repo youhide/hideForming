@@ -43,7 +43,7 @@ resource "helm_release" "renovate" {
   name       = "renovate"
   repository = "https://renovatebot.github.io/helm-charts"
   chart      = "renovate"
-  version    = "41.38.2"
+  version    = "41.42.1"
   namespace  = kubernetes_namespace.renovate.metadata[0].name
   timeout    = 600
 
