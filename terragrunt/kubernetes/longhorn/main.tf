@@ -66,7 +66,7 @@ resource "helm_release" "longhorn" {
   name       = "longhorn"
   repository = "https://charts.longhorn.io"
   chart      = "longhorn"
-  version    = "1.9.0"
+  version    = "1.9.1"
   namespace  = kubernetes_namespace.longhorn_system.metadata[0].name
   timeout    = 600
 
@@ -101,7 +101,7 @@ resource "helm_release" "longhorn" {
 
 resource "kubectl_manifest" "longhorn_daily_backup" {
   yaml_body = <<YAML
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: daily-backup
