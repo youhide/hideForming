@@ -64,7 +64,7 @@ resource "helm_release" "authentik" {
   name       = "authentik"
   repository = "https://charts.goauthentik.io"
   chart      = "authentik"
-  version    = "2025.4.1"
+  version    = "2025.8.3"
   namespace  = kubernetes_namespace.authentik.metadata[0].name
   timeout    = 600
 
