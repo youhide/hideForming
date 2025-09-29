@@ -8,4 +8,6 @@ resource "kubernetes_node_taint" "master_taint" {
     value  = "true"
     effect = "NoSchedule"
   }
+
+  force = true
 }

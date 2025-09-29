@@ -64,7 +64,7 @@ resource "helm_release" "authentik" {
   name       = "authentik"
   repository = "https://charts.goauthentik.io"
   chart      = "authentik"
-  version    = "2025.4.1"
+  version    = "2025.8.3"
   namespace  = kubernetes_namespace.authentik.metadata[0].name
   timeout    = 600
 
@@ -144,8 +144,8 @@ resource "helm_release" "authentik" {
           persistence = {
             storageClass = "longhorn"
             accessModes  = ["ReadWriteOnce"]
-            volumeName : "authentik-postgres-volume"
-            size = "4Gi"
+            volumeName   = "authentik-postgres"
+            size         = "4Gi"
           }
         }
         auth = {
@@ -159,10 +159,10 @@ resource "helm_release" "authentik" {
         enabled = true
         master = {
           persistence = {
-            storageClass = "longhorn"
+            storageClass = "local-path"
             accessModes  = ["ReadWriteOnce"]
-            volumeName : "authentik-redis-volume"
-            size = "2Gi"
+            volumeName   = "authentik-redis"
+            size         = "2Gi"
           }
         }
       }
