@@ -7,6 +7,8 @@
   <img src="https://img.shields.io/badge/Terragrunt-2F7589?style=for-the-badge&logo=terragrunt&logoColor=white" alt="Terragrunt">
   <img src="https://img.shields.io/badge/Vault-000000?style=for-the-badge&logo=vault&logoColor=white" alt="Vault">
   <img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" alt="Kubernetes">
+  <img src="https://img.shields.io/badge/ArgoCD-EE7F35?style=for-the-badge&logo=argo&logoColor=white" alt="ArgoCD">
+  <img src="https://img.shields.io/badge/MetalLB-FF6600?style=for-the-badge&logo=metallb&logoColor=white" alt="MetalLB">
 </p>
 
 ## Overview
@@ -21,7 +23,9 @@ hideForming is a comprehensive Infrastructure as Code (IaC) repository that mana
 
 - **Security**: The implementation includes Authentik for identity and access management, integrating with CloudFlare Zero Trust Gateway to provide fine-grained network security controls.
 
-- **GitOps Workflow**: Atlantis facilitates infrastructure changes through pull requests, enforcing peer review and providing visibility into infrastructure modifications before they are applied.
+- **GitOps Workflow**: Atlantis facilitates infrastructure changes through pull requests, enforcing peer review and providing visibility into infrastructure modifications before they are applied. ArgoCD provides continuous deployment capabilities with GitOps patterns for Kubernetes applications.
+
+- **Load Balancing**: MetalLB provides load balancer functionality for bare metal Kubernetes clusters, enabling LoadBalancer service types without cloud provider dependencies.
 
 The repository follows infrastructure-as-code best practices, including modularization, version control, and the principle of least privilege, making it suitable for production environments while remaining flexible enough for homelab experimentation.
 
@@ -53,7 +57,10 @@ The repository follows infrastructure-as-code best practices, including modulari
 
 - **terragrunt/**: Terragrunt configurations for different environments
   - **kubernetes/**: Kubernetes-related resources
+    - **argocd/**: GitOps continuous deployment with SSO integration
     - **authentik/**: Identity and access management
+    - **authentik-config/**: OIDC configuration for ArgoCD integration
+    - **metallb/**: Load balancer for bare metal Kubernetes
     - **renovate/**: Dependency updates automation
     - **vault/**: Secrets management configuration
   - **openmediavault/**: OpenMediaVault-related resources
@@ -63,6 +70,8 @@ The repository follows infrastructure-as-code best practices, including modulari
 
 ## Key Components
 
+- **ArgoCD**: GitOps continuous deployment for Kubernetes with SSO integration
+- **MetalLB**: Load balancer for bare metal Kubernetes clusters
 - **Vault**: Securely store and manage secrets
 - **External Secrets Operator**: Kubernetes integration for Vault secrets
 - **Authentik**: Identity and access management solution
