@@ -48,23 +48,6 @@ resource "kubectl_manifest" "metallb_ipaddresspool" {
   ]
 }
 
-# resource "kubectl_manifest" "metallb_l2advertisement" {
-#   yaml_body = <<-EOF
-#     apiVersion: metallb.io/v1beta1
-#     kind: L2Advertisement
-#     metadata:
-#       name: default-advertisement
-#       namespace: ${kubernetes_namespace.metallb.metadata[0].name}
-#     spec:
-#       ipAddressPools:
-#         - default-pool
-#   EOF
-
-#   depends_on = [
-#     kubectl_manifest.metallb_ipaddresspool
-#   ]
-# }
-
 resource "kubectl_manifest" "metallb_bgp_advertisement" {
   yaml_body = <<-EOF
     apiVersion: metallb.io/v1beta1
