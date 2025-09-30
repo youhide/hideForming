@@ -34,6 +34,10 @@ resource "kubernetes_manifest" "renovate_external_secret" {
     }
   }
 
+  field_manager {
+    force_conflicts = true
+  }
+
   depends_on = [
     kubernetes_namespace.renovate
   ]

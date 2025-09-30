@@ -55,6 +55,10 @@ resource "kubernetes_manifest" "authentik_external_secret" {
     }
   }
 
+  field_manager {
+    force_conflicts = true
+  }
+
   depends_on = [
     kubernetes_namespace.authentik
   ]
