@@ -119,7 +119,8 @@ resource "helm_release" "argocd" {
           argocdServerAdminPasswordMtime = null
         }
         cm = {
-          url = "https://${local.argocd_domain}"
+          url                      = "https://${local.argocd_domain}"
+          "accounts.admin.enabled" = "false"
           "oidc.config" = yamlencode({
             name            = "Authentik"
             issuer          = "https://${local.auth_domain}/application/o/${local.authentik_client_id}/"
