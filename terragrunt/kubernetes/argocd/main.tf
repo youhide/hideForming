@@ -153,14 +153,8 @@ resource "helm_release" "argocd" {
             [for group in local.admin_groups : "g, ${group}, role:admin"]
           ))
         }
-        params = {
-          "server.insecure" = true
-        }
       }
       server = {
-        extraArgs = [
-          "--insecure"
-        ]
         config = {
           url = "https://${local.argocd_domain}"
         }
