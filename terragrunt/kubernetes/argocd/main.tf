@@ -137,22 +137,11 @@ resource "helm_release" "argocd" {
               }
             }
           })
-          "policy.default" = local.default_policy
-          "policy.csv" = join("\n", concat(
-            [
-              "p, role:admin, applications, *, */*, allow",
-              "p, role:admin, clusters, *, *, allow",
-              "p, role:admin, repositories, *, *, allow",
-              "p, role:admin, certificates, *, *, allow",
-              "p, role:admin, accounts, *, *, allow",
-              "p, role:admin, gpgkeys, *, *, allow",
-              "p, role:admin, logs, *, *, allow",
-              "p, role:admin, exec, *, *, allow",
-              ""
-            ],
-            [for group in local.admin_groups : "g, ${group}, role:admin"]
-          ))
         }
+        rbac = {
+          "policy.default" = local.default_policy
+          "policy.csv"     = join("\n", [for group in local.admin_groups : "g, ${group}, role:admin"])
+        }        
       }
       server = {
         config = {
