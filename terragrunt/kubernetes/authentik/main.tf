@@ -138,7 +138,7 @@ resource "helm_release" "authentik" {
           ingressClassName = "traefik"
           enabled          = true
           hosts = [
-            "auth.tkasolutions.com.br"
+            "authentik.tkasolutions.com.br"
           ]
         }
       }
@@ -148,7 +148,6 @@ resource "helm_release" "authentik" {
           persistence = {
             storageClass = "longhorn"
             accessModes  = ["ReadWriteOnce"]
-            volumeName   = "authentik-postgres"
             size         = "4Gi"
           }
         }
@@ -165,7 +164,6 @@ resource "helm_release" "authentik" {
           persistence = {
             storageClass = "local-path"
             accessModes  = ["ReadWriteOnce"]
-            volumeName   = "authentik-redis"
             size         = "2Gi"
           }
         }

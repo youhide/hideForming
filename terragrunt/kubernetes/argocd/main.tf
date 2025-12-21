@@ -1,7 +1,7 @@
 locals {
   # Configuration variables
   argocd_domain       = "argocd.youhide.com.br"
-  auth_domain         = "auth.tkasolutions.com.br"
+  auth_domain         = "authentik.tkasolutions.com.br"
   admin_groups        = ["authentik Admins"]
   chart_version       = "5.51.6"
   authentik_client_id = "argocd"
@@ -9,6 +9,7 @@ locals {
 
   # Replicas configuration
   replicas = {
+    server          = 2
     controller      = 1
     repo_server     = 1
     application_set = 1
@@ -141,7 +142,7 @@ resource "helm_release" "argocd" {
         rbac = {
           "policy.default" = local.default_policy
           "policy.csv"     = join("\n", [for group in local.admin_groups : "g, ${group}, role:admin"])
-        }        
+        }
       }
       server = {
         config = {
@@ -163,6 +164,9 @@ resource "helm_release" "argocd" {
             }
           }
         ]
+      }
+      server = {
+        replicas = local.replicas.server
       }
       controller = {
         replicas = local.replicas.controller
